@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 from openai import OpenAI
 from constant import TOKEN, OPENAI_API_KEY  # OPENAI_API_KEYもconstant.pyからインポート
+from prompt/test import MESSAGES
 
 extensions = (
 )
@@ -19,14 +20,20 @@ class MyBot(commands.Bot):
 
     # メンションを受けた際の処理を追加
     async def on_message(self, message):
-        messages = [
-            {"role": "system", "content": "あなたは技術的な質問に、端的にわかりやすく回答するAIアシスタントです."}
-        ]
         if message.author.bot:  # ボット自体のメッセージは無視
             return
         if self.user.mentioned_in(message):  # Botへのメンションが含まれている場合
             content = message.content.replace(f'<@!{self.user.id}>', '')  # メンションを削除
-            messages.append({"role": "user", "content": content.split('>')[1].lstrip()})
+            if content.startswith('test:'):  # メッセージの先頭が'test:'で始まる場合        
+                messages_to_ai = [
+                    {"role": "system", "content":MESSAGES}
+                ]
+                messages_to_ai.append({"role": "user", "content": content.split('>')[1].lstrip()})
+            else:
+                messages_to_ai = [
+                    {"role": "system", "content": "あなたは技術的な質問に、端的にわかりやすく回答するAIアシスタントです."}
+                ]
+                messages_to_ai.append({"role": "user", "content": content.split('>')[1].lstrip()})
 
             # OpenAIのAPIキーを設定
             client = OpenAI(
@@ -35,7 +42,7 @@ class MyBot(commands.Bot):
             )
             # OpenAI APIを呼び出して応答を生成
             chat_completion = client.chat.completions.create(
-                messages=messages,
+                messages=messages_to_ai,
                 model="gpt-3.5-turbo",
             )
 
