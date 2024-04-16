@@ -24,7 +24,7 @@ class MyBot(commands.Bot):
             return
         if self.user.mentioned_in(message):  # Botへのメンションが含まれている場合
             content = message.content.replace(f'<@!{self.user.id}>', '')  # メンションを削除
-            if content.startswith('test:'):  # メッセージの先頭が'test:'で始まる場合        
+            if "test:" in message.content:  # メッセージの先頭が'test:'で始まる場合        
                 messages_to_ai = [
                     {"role": "system", "content":MESSAGES}
                 ]
