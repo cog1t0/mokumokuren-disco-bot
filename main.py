@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 from openai import OpenAI
 from constant import TOKEN, OPENAI_API_KEY  # OPENAI_API_KEYもconstant.pyからインポート
-from prompt/test import MESSAGES
+from prompt.test import MESSAGES
 
 extensions = (
 )
